@@ -80,7 +80,7 @@ public class ShoppingServiceImplTest {
      * Тестирование метода {@link ShoppingServiceImpl#buy(Cart)}
      * Проверяем, что возвращается true, корзина очищается и у productDao вызывается метод save,
      * при условии, что корзина не пуста и в наличии есть нужное число товаров
-     * Тест не проходит, так как корзина после покупки не отчищается
+     * Тест не проходит, так как корзина после покупки не очищается
      */
     @Test
     void testBuyWithNotEmptyCart() throws BuyException {
