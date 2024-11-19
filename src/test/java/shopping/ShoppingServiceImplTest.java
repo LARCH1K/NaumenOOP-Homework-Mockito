@@ -9,7 +9,7 @@ import product.Product;
 import product.ProductDao;
 
 /**
- * Тестирование класса {@link ShoppingServiceImpl}
+ * Тестирование класса {@link ShoppingService}
  */
 public class ShoppingServiceImplTest {
 
@@ -21,7 +21,7 @@ public class ShoppingServiceImplTest {
     /**
      * Тестируемый класс
      */
-    private final ShoppingServiceImpl shoppingService;
+    private final ShoppingService shoppingService;
 
     /**
      * Покупатель
@@ -78,7 +78,7 @@ public class ShoppingServiceImplTest {
 
     /**
      * Тестирование метода {@link ShoppingServiceImpl#buy(Cart)}
-     * Проверяем, что возвращается true, корзина отчищается и у productDao вызывается метод save,
+     * Проверяем, что возвращается true, корзина очищается и у productDao вызывается метод save,
      * при условии, что корзина не пуста и в наличии есть нужное число товаров
      * Тест не проходит, так как корзина после покупки не отчищается
      */
@@ -118,6 +118,27 @@ public class ShoppingServiceImplTest {
         Assertions.assertEquals(0, product2.getCount());
 
         Assertions.assertEquals(0, cart.getProducts().size());
+    }
+
+    /**
+     * Тестирование метода {@link ShoppingServiceImpl#buy(Cart)}
+     * Проверяем, что возвращается false и у productDao не вызывается метод save,
+     * при условии, что в корзине присутствует отрицательное количество товаров.
+     * Тест не проходит, так как нет проверки на добавление в корзину или покупку отрицательного количества товаров
+     */
+    @Test
+    void testBuyWhenCountProductsInCartNegative() throws BuyException {
+        Product product1 = new Product("Продукт 1", 3);
+        Product product2 = new Product("Продукт 2", 2);
+        cart.add(product1, 2);
+        cart.add(product2, -2);
+
+        Assertions.assertFalse(shoppingService.buy(cart));
+        Mockito.verifyNoInteractions(productDAOMock);
+        Assertions.assertEquals(3, product1.getCount());
+        Assertions.assertEquals(2, product2.getCount());
+
+        Assertions.assertEquals(2, cart.getProducts().size());
     }
 
     /**
